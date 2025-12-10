@@ -15,6 +15,7 @@ const nextConfig = {
       },
     ],
   },
+  // output: "export", // Exports the site as static assets that are deployable anywhere
 };
 
 export default nextConfig;
