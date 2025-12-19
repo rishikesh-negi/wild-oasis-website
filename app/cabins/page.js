@@ -1,12 +1,17 @@
 import { Suspense } from "react";
 import CabinsList from "../_components/CabinsList";
 import Spinner from "../_components/Spinner";
+import { cacheLife, cacheTag } from "next/cache";
 
 export const metadata = {
   title: "Cabins",
 };
 
-export default function Page() {
+export default async function Page() {
+  "use cache";
+  cacheTag("cabins");
+  cacheLife({ revalidate: 3600, expire: 5400 });
+
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
