@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 /////////////
 // GET
 
-export const getCabin = cache(async function (id) {
+export const getCabin = async function (id) {
   const { data, error } = await supabase
     .from("cabins")
     .select("*")
@@ -22,7 +22,7 @@ export const getCabin = cache(async function (id) {
   }
 
   return data;
-});
+};
 
 export async function getCabinPrice(id) {
   const { data, error } = await supabase
@@ -38,7 +38,7 @@ export async function getCabinPrice(id) {
   return data;
 }
 
-export const getCabins = cache(async function () {
+export const getCabins = async function () {
   const { data, error } = await supabase
     .from("cabins")
     .select("id, name, maxCapacity, regularPrice, discount, image")
@@ -50,7 +50,7 @@ export const getCabins = cache(async function () {
   }
 
   return data;
-});
+};
 
 // Guests are uniquely identified by their email address
 export async function getGuest(email) {
