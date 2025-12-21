@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Page() {
   // CHANGE
-  const countryFlag = "pt.jpg";
+  const countryFlag = "/pt.jpg";
   const nationality = "portugal";
 
   return (
@@ -44,13 +44,15 @@ export default function Page() {
             <Image
               src={countryFlag}
               alt="Country flag"
+              width={10}
+              height={10}
               className="h-5 rounded-sm"
             />
           </div>
 
           <SelectCountry
-            name="nationality"
-            id="nationality"
+            name={nationality}
+            id={nationality}
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
             defaultCountry={nationality}
           />
