@@ -1,16 +1,14 @@
 import { Suspense } from "react";
-import CabinsList from "../_components/CabinsList";
-import Spinner from "../_components/Spinner";
-import { cacheLife, cacheTag } from "next/cache";
+import CabinsList from "@/app/_components/CabinsList";
+import Spinner from "@/app/_components/Spinner";
+import Filter from "@/app/_components/Filter";
 
 export const metadata = {
   title: "Cabins",
 };
 
-export default async function Page() {
-  "use cache";
-  cacheTag("cabins");
-  cacheLife({ revalidate: 3600, expire: 5400 });
+export default async function Page({ searchParams }) {
+  const filter = (await searchParams)?.capacity ?? "all";
 
   return (
     <div>
@@ -25,9 +23,13 @@ export default async function Page() {
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
 
-      <Suspense fallback={<Spinner />}>
-        <CabinsList />
+      {/* IMPORTANT NOTE: The CabinsList component's content is dependent on the above 'Filter' (client) component. Since Filter uses Next.js's navigation, which wraps CabinsList in a React transition boundary, Suspense will not render a fallback, unless the Suspense boundary is provided with a key that changes every time CabinsList is suspended. Even with the key, Suspense only renders the fallback in a production build -- not in development: */}
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinsList filter={filter} />
       </Suspense>
     </div>
   );
