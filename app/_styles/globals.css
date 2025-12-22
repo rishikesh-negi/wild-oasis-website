@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
+
 @theme {
   --color-primary-50: #e1e8ef;
   --color-primary-100: #d4dee7;
