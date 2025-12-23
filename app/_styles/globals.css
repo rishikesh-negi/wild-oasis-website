@@ -58,12 +58,37 @@
       transform: rotate(1turn);
     }
   }
+
+  .rdp-day_button {
+    transition: all !important;
+    transition-duration: 0.15s !important;
+  }
+
+  .rdp-day_button:hover {
+    background-color: theme(--color-accent-500) !important;
+    color: theme(--color-primary-800) !important;
+  }
+
+  .rdp-day_button:hover > * {
+    transform: scale(110%) !important;
+  }
+
+  .rdp-dropdown option {
+    background-color: theme(--color-primary-900) !important;
+    color: theme(--color-primary-100);
+  }
 }
 
 /* For Data Picker */
-.rdp {
-  --rdp-cell-size: 32px !important;
+.rdp-root {
+  --rdp-day-height: 32px !important;
+  --rdp-day-width: 32px !important;
+  --rdp-day_button-height: 32px !important;
+  --rdp-day_button-width: 32px !important;
   --rdp-accent-color: theme(--color-accent-500) !important;
-  --rdp-background-color: theme(--color-accent-600) !important;
+  --rdp-accent-background-color: theme(--color-accent-600) !important;
+  --rdp-range_middle-color: theme(--color-primary-800) !important;
+  --rdp-range_start-color: theme(--color-primary-800) !important;
+  --rdp-range_end-color: theme(--color-primary-800) !important;
   margin: 0 !important;
 }
