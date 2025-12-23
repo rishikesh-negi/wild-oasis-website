@@ -107,7 +107,7 @@ export async function getBookedDatesByCabinId(cabinId) {
     .from("bookings")
     .select("*")
     .eq("cabinId", cabinId)
-    .or(`startDate.gte.${today},status.eq.checked-in`);
+    .or(`endDate.gte.${today},status.eq.checked-in`);
 
   if (error) {
     console.error(error);
