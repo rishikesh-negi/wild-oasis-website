@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import CabinsList from "@/app/_components/CabinsList";
 import Spinner from "@/app/_components/Spinner";
 import Filter from "@/app/_components/Filter";
+import ReservationReminder from "../_components/ReservationReminder";
 
 export const metadata = {
   title: "Cabins",
@@ -30,6 +31,7 @@ export default async function Page({ searchParams }) {
       {/* IMPORTANT NOTE: The CabinsList component's content is dependent on the above 'Filter' (client) component. Since Filter uses Next.js's navigation, which wraps CabinsList in a React transition boundary, Suspense will not render a fallback, unless the Suspense boundary is provided with a key that changes every time CabinsList is suspended. Even with the key, Suspense only renders the fallback in a production build -- not in development: */}
       <Suspense fallback={<Spinner />} key={filter}>
         <CabinsList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );
