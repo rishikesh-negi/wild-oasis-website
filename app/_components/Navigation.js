@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import SpinnerMini from "./SpinnerMini";
+import UserProfileNavLink from "./UserProfileNavLink";
 
 export default function Navigation() {
   return (
@@ -19,11 +22,9 @@ export default function Navigation() {
           </Link>
         </li>
         <li>
-          <Link
-            href="/account"
-            className="hover:text-accent-400 transition-colors">
-            Guest area
-          </Link>
+          <Suspense fallback={<SpinnerMini />}>
+            <UserProfileNavLink />
+          </Suspense>
         </li>
       </ul>
     </nav>
