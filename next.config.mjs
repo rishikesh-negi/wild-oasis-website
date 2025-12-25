@@ -14,6 +14,11 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
     ],
   },
   // output: "export", // Exports the site as static assets that are deployable anywhere
