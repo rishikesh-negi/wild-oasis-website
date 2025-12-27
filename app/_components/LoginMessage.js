@@ -6,7 +6,9 @@ function LoginMessage({ cabinId }) {
       <p className="text-center text-xl py-12 self-center">
         Please{" "}
         <Link
-          href={`/login?redirectTo=${encodeURIComponent(`/cabins/${cabinId}`)}`}
+          href={`/login?redirectTo=${encodeURIComponent(
+            `/cabins/${cabinId}#reservation-form`
+          )}`}
           className="underline text-accent-500">
           login
         </Link>{" "}
