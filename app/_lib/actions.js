@@ -31,8 +31,6 @@ export async function updateProfile(formData) {
     nationalID,
   };
 
-  console.log(countryFlag);
-
   const { data, error } = await supabase
     .from("guests")
     .update(updateData)
