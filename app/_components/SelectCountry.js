@@ -1,11 +1,10 @@
 import { getCountries } from "@/app/_lib/data-service";
+import { use } from "react";
 
 // Let's imagine your colleague already built this component 😃
 
-async function SelectCountry({ defaultCountry, name, id, className }) {
-  "use cache";
-
-  const countries = await getCountries();
+function SelectCountry({ defaultCountry, name, id, className }) {
+  const countries = use(getCountries());
   const flag =
     countries.find((country) => country.name === defaultCountry)?.flag ?? "";
 
@@ -15,7 +14,8 @@ async function SelectCountry({ defaultCountry, name, id, className }) {
       id={id}
       // Here we use a trick to encode BOTH the country name and the flag into the value. Then we split them up again later in the server action
       defaultValue={`${defaultCountry}%${flag}`}
-      className={className}>
+      className={className}
+      key={defaultCountry}>
       <option value="">Select country...</option>
       {countries.map((c) => (
         <option key={c.name} value={`${c.name}%${c.flag}`}>
