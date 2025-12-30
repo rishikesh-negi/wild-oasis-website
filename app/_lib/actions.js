@@ -15,13 +15,19 @@ export async function signOutAction() {
   });
 }
 
-export async function updateProfile(formData) {
+export async function updateProfile(prevState, formData) {
   const session = await auth();
 
   if (!session) throw new Error("You must be logged in to perform this action");
 
   const nationalID = formData.get("nationalID");
   const [nationality, countryFlag] = formData.get("nationality").split("%");
+
+  if (
+    prevState.nationalID === nationalID &&
+    prevState.nationality === nationality
+  )
+    return prevState;
 
   if (!/^[a-zA-Z0-9]{6,12}$/.test(nationalID))
     throw new Error("Please provide a valid national ID");
@@ -35,9 +41,13 @@ export async function updateProfile(formData) {
   const { data, error } = await supabase
     .from("guests")
     .update(updateData)
-    .eq("id", session.user.guestId);
+    .eq("id", session.user.guestId)
+    .select()
+    .single();
 
   if (error) throw new Error("Guest profile could not be updated");
 
   revalidatePath("/account");
+
+  return data;
 }
