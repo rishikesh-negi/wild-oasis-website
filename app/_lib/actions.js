@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
+import { getBooking } from "./data-service";
 
 export async function signInAction(redirectTo) {
   const targetPath = redirectTo ?? "/account";
@@ -50,4 +51,24 @@ export async function updateProfile(prevState, formData) {
   revalidatePath("/account");
 
   return data;
+}
+
+export async function deleteReservation(bookingId) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in to perform this action");
+
+  const reservation = await getBooking(bookingId);
+
+  // Prevent malicious users from deleting reservations not belonging to them:
+  if (reservation.guestId !== session.user.guestId)
+    throw new Error("You are not authorised to perform this action");
+
+  const { error } = await supabase
+    .from("bookings")
+    .delete()
+    .eq("id", bookingId);
+
+  if (error) throw new Error("Booking could not be deleted");
+
+  revalidatePath("/account/reservations");
 }
