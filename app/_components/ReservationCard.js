@@ -1,7 +1,16 @@
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
-import { format, formatDistance, isPast, isToday, parseISO } from "date-fns";
+import {
+  format,
+  formatDistance,
+  isFuture,
+  isPast,
+  isToday,
+  isWithinInterval,
+  parseISO,
+} from "date-fns";
 import DeleteReservation from "@/app/_components/DeleteReservation";
 import Image from "next/image";
+import Link from "next/link";
 
 export const formatDistanceFromNow = (dateStr) =>
   formatDistance(parseISO(dateStr), new Date(), {
@@ -22,13 +31,27 @@ function ReservationCard({ booking }) {
     cabins: { name, image },
   } = booking;
 
+  const statusTextColor =
+    status === "unconfirmed" ? "text-orange-600" : "text-green-500";
+
+  const hasElapsed = isPast(new Date(endDate));
+  const isOngoing = isWithinInterval(new Date(), {
+    start: new Date(startDate),
+    end: new Date(endDate),
+  });
+  const isUpcoming = isFuture(new Date(startDate));
+
+  const editAndDeleteDisabled = hasElapsed || status !== "unconfirmed";
+
   return (
-    <div className="flex border border-primary-800">
-      <div className="relative h-32 aspect-square">
+    <div className="h-fit flex border border-primary-800">
+      <div className="relative aspect-square w-[15%]">
         <Image
           src={image}
           alt={`Cabin ${name}`}
+          fill
           className="object-cover border-r border-primary-800"
+          priority
         />
       </div>
 
@@ -37,14 +60,35 @@ function ReservationCard({ booking }) {
           <h3 className="text-xl font-semibold">
             {numNights} nights in Cabin {name}
           </h3>
-          {isPast(new Date(startDate)) ? (
-            <span className="bg-yellow-800 text-yellow-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
-              past
-            </span>
-          ) : (
-            <span className="bg-green-800 text-green-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
-              upcoming
-            </span>
+          {hasElapsed && (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <span className="bg-orange-800 text-orange-100 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
+                elapsed
+              </span>
+              <span className={`text-[0.7rem] ${statusTextColor} uppercase`}>
+                {status}
+              </span>
+            </div>
+          )}
+          {isUpcoming && (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <span className="bg-green-800 text-green-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
+                upcoming
+              </span>
+              <span className={`text-[0.7rem] ${statusTextColor} uppercase`}>
+                {status}
+              </span>
+            </div>
+          )}
+          {isOngoing && (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <span className="bg-cyan-800 text-cyan-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
+                ongoing
+              </span>
+              <span className={`text-[0.7rem] ${statusTextColor} uppercase`}>
+                {status}
+              </span>
+            </div>
           )}
         </div>
 
@@ -69,13 +113,23 @@ function ReservationCard({ booking }) {
       </div>
 
       <div className="flex flex-col border-l border-primary-800 w-[100px]">
-        <a
-          href={`/account/reservations/edit/${id}`}
-          className="group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 border-b border-primary-800 grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900">
-          <PencilSquareIcon className="h-5 w-5 text-primary-600 group-hover:text-primary-800 transition-colors" />
+        <Link
+          href={editAndDeleteDisabled ? "" : `/account/reservations/edit/${id}`}
+          className={`group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 border-b border-primary-800 grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900 ${
+            editAndDeleteDisabled &&
+            "text-primary-700 hover:text-primary-700 hover:*:text-primary-700 cursor-not-allowed hover:bg-transparent pointer-events-none transition-none"
+          }`}>
+          <PencilSquareIcon
+            className={`h-5 w-5 text-primary-500 group-hover:text-primary-800 transition-colors ${
+              editAndDeleteDisabled && "text-primary-700"
+            }`}
+          />
           <span className="mt-1">Edit</span>
-        </a>
-        <DeleteReservation bookingId={id} />
+        </Link>
+        <DeleteReservation
+          bookingId={id}
+          editAndDeleteDisabled={editAndDeleteDisabled}
+        />
       </div>
     </div>
   );
