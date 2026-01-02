@@ -32,7 +32,7 @@ function ReservationCard({ booking }) {
   } = booking;
 
   const statusTextColor =
-    status === "unconfirmed" ? "text-orange-600" : "text-green-500";
+    status === "unconfirmed" ? "text-yellow-500" : "text-green-500";
 
   const hasElapsed = isPast(new Date(endDate));
   const isOngoing = isWithinInterval(new Date(), {
@@ -55,7 +55,7 @@ function ReservationCard({ booking }) {
         />
       </div>
 
-      <div className="grow px-6 py-3 flex flex-col">
+      <div className="grow px-6 py-3 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold">
             {numNights} nights in Cabin {name}
