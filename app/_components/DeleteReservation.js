@@ -2,11 +2,16 @@
 
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { deleteReservation } from "../_lib/actions";
+import { useTransition } from "react";
+import SpinnerMini from "./SpinnerMini";
 
 function DeleteReservation({ bookingId, editAndDeleteDisabled }) {
+  const [isPending, startTransition] = useTransition();
+
   async function onClick() {
     if (editAndDeleteDisabled) return;
-    await deleteReservation(bookingId);
+    if (confirm("Are you sure you want to delete this reservation?"))
+      startTransition(() => deleteReservation(bookingId));
   }
 
   return (
@@ -17,14 +22,23 @@ function DeleteReservation({ bookingId, editAndDeleteDisabled }) {
       }`}
       disabled={editAndDeleteDisabled}
       onClick={onClick}>
-      <TrashIcon
-        className={`h-5 w-5 text-primary-500 group-hover:text-primary-800 transition-colors ${
-          editAndDeleteDisabled && "text-primary-700"
-        }`}
-      />
-      <span className={`mt-1 ${editAndDeleteDisabled && "text-primary-700"}`}>
-        Delete
-      </span>
+      {isPending ? (
+        <span className="mx-auto">
+          <SpinnerMini />
+        </span>
+      ) : (
+        <>
+          <TrashIcon
+            className={`h-5 w-5 text-primary-500 group-hover:text-primary-800 transition-colors ${
+              editAndDeleteDisabled && "text-primary-700"
+            }`}
+          />
+          <span
+            className={`mt-1 ${editAndDeleteDisabled && "text-primary-700"}`}>
+            Delete
+          </span>
+        </>
+      )}
     </button>
   );
 }
