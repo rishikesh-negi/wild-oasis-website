@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
 import { getBooking } from "./data-service";
+import { redirect } from "next/navigation";
 
 export async function signInAction(redirectTo) {
   const targetPath = redirectTo ?? "/account";
@@ -18,7 +19,6 @@ export async function signOutAction() {
 
 export async function updateProfile(prevState, formData) {
   const session = await auth();
-
   if (!session) throw new Error("You must be logged in to perform this action");
 
   const nationalID = formData.get("nationalID");
@@ -48,7 +48,7 @@ export async function updateProfile(prevState, formData) {
 
   if (error) throw new Error("Guest profile could not be updated");
 
-  revalidatePath("/account");
+  revalidatePath("/account/profile");
 
   return data;
 }
@@ -71,4 +71,39 @@ export async function deleteReservation(bookingId) {
   if (error) throw new Error("Booking could not be deleted");
 
   revalidatePath("/account/reservations");
+}
+
+export async function editReservation(prevState, formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in to perform this action");
+
+  const { reservationId } = prevState;
+  const reservation = await getBooking(reservationId);
+
+  if (reservation.guestId !== session.user.guestId)
+    throw new Error("You are not authorised to perform this action");
+
+  const numGuests =
+    Number.parseInt(formData.get("numGuests")) || prevState.numGuests;
+  const observations = formData.get("observations").slice(0, 1000);
+
+  if (
+    prevState.numGuests === numGuests &&
+    prevState.observations === observations
+  )
+    redirect("/account/reservations");
+
+  const updateData = { numGuests, observations };
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .update(updateData)
+    .eq("id", reservationId);
+
+  if (error)
+    throw new Error("Failed to update the reservation. Please try again.");
+
+  revalidatePath("/account/reservations");
+
+  redirect("/account/reservations");
 }
