@@ -1,8 +1,9 @@
-import ReservationCard from "@/app/_components/ReservationCard";
+import ReservationsList from "@/app/_components/ReservationsList";
+import Spinner from "@/app/_components/Spinner";
 import { auth } from "@/app/_lib/auth";
 import { getBookings } from "@/app/_lib/data-service";
 import Link from "next/link";
-import { use } from "react";
+import { Suspense, use } from "react";
 
 export const metadata = {
   title: "Reservations",
@@ -26,11 +27,9 @@ export default function Page() {
           </Link>
         </p>
       ) : (
-        <ul className="space-y-6">
-          {bookings.map((booking) => (
-            <ReservationCard booking={booking} key={booking.id} />
-          ))}
-        </ul>
+        <Suspense fallback={<Spinner />}>
+          <ReservationsList bookings={bookings} />
+        </Suspense>
       )}
     </div>
   );
