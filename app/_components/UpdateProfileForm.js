@@ -5,8 +5,6 @@ import { useActionState, useState } from "react";
 import { updateProfile } from "../_lib/actions";
 
 function UpdateProfileForm({ children, guest }) {
-  const [count, setCount] = useState();
-
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
 
   const [state, formAction, isPending] = useActionState(updateProfile, {
