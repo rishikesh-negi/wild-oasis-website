@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
-import { getBooking } from "./data-service";
+import { getBookedDatesByCabinId, getBooking } from "./data-service";
 import { redirect } from "next/navigation";
+import { isAlreadyBooked } from "../utils/isAlreadyBooked";
 
 export async function signInAction(redirectTo) {
   const targetPath = redirectTo ?? "/account";
@@ -51,6 +52,47 @@ export async function updateProfile(prevState, formData) {
   revalidatePath("/account/profile");
 
   return data;
+}
+
+export async function createReservation(reservationData, _, formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in to perform this action");
+
+  const newBooking = {
+    ...reservationData,
+    numGuests: Number.parseInt(formData.get("numGuests")),
+    observations: formData.get("observations")?.slice(0, 1000),
+  };
+
+  // Server-side validation of selected date range:
+  const cabinBookedDates = await getBookedDatesByCabinId(
+    reservationData.cabinId
+  );
+  const rangeUnavailable = isAlreadyBooked(
+    { from: reservationData.startDate, to: reservationData.endDate },
+    cabinBookedDates
+  );
+
+  if (rangeUnavailable)
+    throw new Error(
+      "Your selected range overlaps with some dates of another reservation. Try a different date range or a different cabin."
+    );
+
+  // Create the new reservation:
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert([newBooking])
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to create reservation. Please try again");
+  }
+
+  revalidatePath("/account/reservations");
+
+  return { status: "success", data };
 }
 
 export async function deleteReservation(bookingId) {
