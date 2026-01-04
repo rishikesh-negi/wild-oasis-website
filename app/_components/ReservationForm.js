@@ -1,11 +1,53 @@
 "use client";
 
+import { differenceInDays } from "date-fns";
 import Image from "next/image";
+import { useActionState } from "react";
+import { createReservation } from "../_lib/actions";
 import { useReservation } from "../contexts/ReservationContext";
+import { redirect } from "next/navigation";
+import SpinnerMini from "./SpinnerMini";
 
 function ReservationForm({ cabin, user }) {
-  const { maxCapacity } = cabin;
-  const { range } = useReservation();
+  const { maxCapacity, regularPrice, discount, id: cabinId } = cabin;
+  const { range, resetRange } = useReservation();
+
+  const numNights = differenceInDays(range?.to, range?.from);
+  const cabinPrice = numNights * regularPrice - discount;
+
+  const startDate = range?.from;
+  const endDate = range?.to;
+
+  const reservationData = {
+    startDate,
+    endDate,
+    numNights,
+    cabinPrice,
+    extrasPrice: 0,
+    totalPrice: cabinPrice,
+    status: "unconfirmed",
+    hasBreakfast: false,
+    isPaid: false,
+    cabinId,
+    guestId: user?.guestId,
+  };
+
+  const createReservationWithData = createReservation.bind(
+    null,
+    reservationData
+  );
+
+  const [state, formAction, isPending] = useActionState(async function (
+    prevState = null,
+    formData
+  ) {
+    const { status } = await createReservationWithData(prevState, formData);
+    if (status === "success") {
+      resetRange();
+      redirect("/account/reservations");
+    }
+  },
+  null);
 
   return (
     <div className="scale-[1.01]">
@@ -25,7 +67,10 @@ function ReservationForm({ cabin, user }) {
         </div>
       </div>
 
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={formAction}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
+        key={`${cabinId}-${user.guestId}-${numNights}`}>
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
@@ -59,8 +104,13 @@ function ReservationForm({ cabin, user }) {
         <div className="flex justify-end items-center gap-6">
           <p className="text-primary-300 text-base">Start by selecting dates</p>
 
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
+          <button
+            className="relative bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
+            disabled={isPending}>
+            <span className="invisible block">Reserve now</span>
+            <span className="absolute inset-0 flex items-center justify-center">
+              {isPending ? <SpinnerMini /> : "Reserve now"}
+            </span>
           </button>
         </div>
       </form>
