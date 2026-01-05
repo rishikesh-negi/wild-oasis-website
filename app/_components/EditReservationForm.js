@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { editReservation } from "../_lib/actions";
-import SpinnerMini from "./SpinnerMini";
+import SubmitActionButton from "./SubmitActionButton";
 
 function EditReservationForm({ reservation, cabin }) {
   const { numGuests, observations, id: reservationId } = reservation;
@@ -50,14 +50,11 @@ function EditReservationForm({ reservation, cabin }) {
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <button
-          className="relative bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:pointer-events-none disabled:bg-gray-500 disabled:text-gray-300"
-          disabled={isPending}>
-          <span className="invisible block">Update reservation</span>
-          <span className="absolute inset-0 flex items-center justify-center">
-            {isPending ? <SpinnerMini /> : "Update reservation"}
-          </span>
-        </button>
+        <SubmitActionButton
+          isPending={isPending}
+          buttonText={"Update reservation"}>
+          Update reservation
+        </SubmitActionButton>
       </div>
     </form>
   );
