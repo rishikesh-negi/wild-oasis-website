@@ -106,7 +106,7 @@ export async function getBookedDatesByCabinId(cabinId) {
     .from("bookings")
     .select("*")
     .eq("cabinId", cabinId)
-    .or(`endDate.gte.${today},status.eq.checked-in`);
+    .gte("endDate", today);
 
   if (error) {
     console.error(error);
@@ -117,8 +117,8 @@ export async function getBookedDatesByCabinId(cabinId) {
   const bookedDates = data
     .map((booking) => {
       return eachDayOfInterval({
-        start: new Date(booking.startDate),
-        end: new Date(booking.endDate),
+        start: booking.startDate,
+        end: booking.endDate,
       });
     })
     .flat();
