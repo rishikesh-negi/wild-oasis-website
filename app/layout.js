@@ -4,6 +4,7 @@ import "@/app/_styles/globals.css";
 
 import Header from "./_components/Header";
 import { ReservationProvider } from "./contexts/ReservationContext";
+import { Toaster } from "react-hot-toast";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         <div className="flex-1 px-8 py-12 grid">
           <main className="max-w-7xl mx-auto w-full">
             <ReservationProvider>{children}</ReservationProvider>
+            <Toaster />
           </main>
         </div>
       </body>
