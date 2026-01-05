@@ -1,7 +1,7 @@
-import { Suspense } from "react";
 import CabinsList from "@/app/_components/CabinsList";
-import Spinner from "@/app/_components/Spinner";
 import Filter from "@/app/_components/Filter";
+import Spinner from "@/app/_components/Spinner";
+import { Suspense } from "react";
 import ReservationReminder from "../_components/ReservationReminder";
 
 export const metadata = {

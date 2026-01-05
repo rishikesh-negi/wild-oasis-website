@@ -1,8 +1,8 @@
 "use client";
 
 import { useOptimistic } from "react";
-import ReservationCard from "./ReservationCard";
 import { deleteReservation } from "../_lib/actions";
+import ReservationCard from "./ReservationCard";
 
 function ReservationsList({ bookings }) {
   const [optimisticBookings, optimisticDelete] = useOptimistic(

@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { auth, signIn, signOut } from "./auth";
-import { supabase } from "./supabase";
-import { getBookedDatesByCabinId, getBooking } from "./data-service";
 import { redirect } from "next/navigation";
 import { isAlreadyBooked } from "../utils/isAlreadyBooked";
+import { auth, signIn, signOut } from "./auth";
+import { getBookedDatesByCabinId, getBooking } from "./data-service";
+import { supabase } from "./supabase";
 
 export async function signInAction(redirectTo) {
   const targetPath = redirectTo ?? "/account";

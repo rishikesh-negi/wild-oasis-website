@@ -1,5 +1,5 @@
 import EditReservationForm from "@/app/_components/EditReservationForm";
-import { getBooking, getBookings, getCabin } from "@/app/_lib/data-service";
+import { getBooking, getCabin } from "@/app/_lib/data-service";
 import { use } from "react";
 
 export const metadata = {

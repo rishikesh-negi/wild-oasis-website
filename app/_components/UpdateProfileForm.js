@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { updateProfile } from "../_lib/actions";
 import SubmitActionButton from "./SubmitActionButton";
 

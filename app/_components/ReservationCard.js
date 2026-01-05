@@ -1,3 +1,4 @@
+import DeleteReservation from "@/app/_components/DeleteReservation";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import {
   format,
@@ -8,7 +9,6 @@ import {
   isWithinInterval,
   parseISO,
 } from "date-fns";
-import DeleteReservation from "@/app/_components/DeleteReservation";
 import Image from "next/image";
 import Link from "next/link";
 

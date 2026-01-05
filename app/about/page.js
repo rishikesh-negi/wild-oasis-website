@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { getCabins } from "../_lib/data-service";
 import { cacheLife } from "next/cache";
+import Image from "next/image";
 import Link from "next/link";
+import { getCabins } from "../_lib/data-service";
 
 export const metadata = {
   title: "About Us",

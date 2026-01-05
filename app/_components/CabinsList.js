@@ -1,6 +1,6 @@
-import { getCabins } from "../_lib/data-service";
 import CabinCard from "@/app/_components/CabinCard";
 import { cacheLife } from "next/cache";
+import { getCabins } from "../_lib/data-service";
 
 async function CabinsList({ filter }) {
   "use cache";

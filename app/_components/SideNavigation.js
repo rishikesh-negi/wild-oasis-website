@@ -1,11 +1,11 @@
 "use client";
 
+import SignOutButton from "@/app/_components/SignOutButton";
 import {
   CalendarDaysIcon,
   HomeIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
-import SignOutButton from "@/app/_components/SignOutButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

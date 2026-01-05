@@ -2,9 +2,9 @@ import { Josefin_Sans } from "next/font/google";
 
 import "@/app/_styles/globals.css";
 
+import { Toaster } from "react-hot-toast";
 import Header from "./_components/Header";
 import { ReservationProvider } from "./contexts/ReservationContext";
-import { Toaster } from "react-hot-toast";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
