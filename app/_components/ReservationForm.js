@@ -1,15 +1,23 @@
 "use client";
 
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { differenceInDays } from "date-fns";
 import Image from "next/image";
 import { useActionState } from "react";
+import toast from "react-hot-toast";
 import { createReservation } from "../_lib/actions";
 import { useReservation } from "../contexts/ReservationContext";
-import { redirect } from "next/navigation";
-import SpinnerMini from "./SpinnerMini";
+import ReservationSuccessToast from "./ReservationSuccessToast";
+import SubmitActionButton from "./SubmitActionButton";
 
 function ReservationForm({ cabin, user }) {
-  const { maxCapacity, regularPrice, discount, id: cabinId } = cabin;
+  const {
+    maxCapacity,
+    regularPrice,
+    discount,
+    id: cabinId,
+    name: cabinName,
+  } = cabin;
   const { range, resetRange } = useReservation();
 
   const numNights = differenceInDays(range?.to, range?.from);
@@ -44,13 +52,25 @@ function ReservationForm({ cabin, user }) {
     const { status } = await createReservationWithData(prevState, formData);
     if (status === "success") {
       resetRange();
-      redirect("/account/reservations");
+      toast.custom(
+        (t) => (
+          <ReservationSuccessToast
+            isVisible={t?.visible}
+            cabinName={cabinName}
+            startDate={startDate}
+            endDate={endDate}
+            toastId={t.id}
+            icon={t.icon}
+          />
+        ),
+        { icon: <CheckCircleIcon className="h-8 w-8 fill-green-500" /> }
+      );
     }
   },
   null);
 
   return (
-    <div className="scale-[1.01]">
+    <div className="grid transition-all duration-100">
       <div className="bg-primary-800 text-primary-300 px-16 py-2 flex justify-between items-center">
         <p>Logged in as</p>
 
@@ -101,17 +121,19 @@ function ReservationForm({ cabin, user }) {
           />
         </div>
 
-        <div className="flex justify-end items-center gap-6">
-          <p className="text-primary-300 text-base">Start by selecting dates</p>
-
-          <button
-            className="relative bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
-            disabled={isPending}>
-            <span className="invisible block">Reserve now</span>
-            <span className="absolute inset-0 flex items-center justify-center">
-              {isPending ? <SpinnerMini /> : "Reserve now"}
-            </span>
-          </button>
+        <div className="relative flex justify-end items-center gap-6">
+          <span className="invisible block px-8 py-8"></span>
+          {!(startDate && endDate) ? (
+            <p className="text-primary-300 text-base">
+              Start by selecting dates
+            </p>
+          ) : (
+            <SubmitActionButton
+              isPending={isPending}
+              buttonText={"Reserve now"}>
+              Reserve now
+            </SubmitActionButton>
+          )}
         </div>
       </form>
     </div>
