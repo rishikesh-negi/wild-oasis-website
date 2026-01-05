@@ -65,9 +65,13 @@ export async function createReservation(reservationData, _, formData) {
   };
 
   // Server-side validation of selected date range:
-  const cabinBookedDates = await getBookedDatesByCabinId(
-    reservationData.cabinId
+  const cabinBookedDates = (
+    await getBookedDatesByCabinId(reservationData.cabinId)
+  )?.map(
+    (date) =>
+      new Date(date.getTime() - new Date().getTimezoneOffset() * 60 * 1000)
   );
+
   const rangeUnavailable = isAlreadyBooked(
     { from: reservationData.startDate, to: reservationData.endDate },
     cabinBookedDates
@@ -91,6 +95,7 @@ export async function createReservation(reservationData, _, formData) {
   }
 
   revalidatePath("/account/reservations");
+  revalidatePath(`/cabins/${reservationData.cabinId}`);
 
   return { status: "success", data };
 }
