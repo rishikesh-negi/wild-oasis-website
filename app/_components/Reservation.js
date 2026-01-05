@@ -18,7 +18,12 @@ async function Reservation({ cabin }) {
       id="reservation-form">
       <DateSelector
         settings={settings}
-        bookedDates={bookedDates}
+        bookedDates={bookedDates.map(
+          (date) =>
+            new Date(
+              date.getTime() - new Date().getTimezoneOffset() * 60 * 1000
+            )
+        )}
         cabin={cabin}
       />
       {session?.user ? (
