@@ -63,7 +63,10 @@ function ReservationForm({ cabin, user }) {
             icon={t.icon}
           />
         ),
-        { icon: <CheckCircleIcon className="h-8 w-8 fill-green-500" /> }
+        {
+          icon: <CheckCircleIcon className="h-8 w-8 fill-green-500" />,
+          duration: 5000,
+        }
       );
     }
   },
